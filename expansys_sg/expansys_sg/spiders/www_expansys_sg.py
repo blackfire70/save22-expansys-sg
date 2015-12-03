@@ -27,7 +27,7 @@ class ExpansysSpider(scrapy.Spider):
         #gfcg
         for sel in response.xpath('//li[@class="title"]//a/@href'):
             url = response.urljoin(sel.extract())
-            print url
+            
             yield scrapy.Request(url, callback=self.parse_grid_contents)
         for href in response.xpath('//a[@class="next"]/@href'):
             url = response.urljoin(href.extract())
@@ -42,12 +42,18 @@ class ExpansysSpider(scrapy.Spider):
             if r.xpath('//link/@href')[0].extract() not in self.lnkk:
                 item['title'] = r.xpath('//h1[@itemprop="name"]/text()').extract()
                 item['link'] =  r.xpath('//link/@href')[0].extract()
-                item['price'] = r.xpath('//span[@itemprop="price"]/text()').extract()
+                
+                if not r.xpath('//li[@class="instock"]')  and not  r.xpath('//li[@class="infostock"]'):
+                    item['price'] = r.xpath('//p[@id="price"]/strong/text()').extract()
+                    
+                else:
+                    item['price'] = r.xpath('//span[@itemprop="price"]/text()').extract()
                 item['currency'] = r.xpath('//p[@id="price"]/meta/@content').extract()
                 m = re.search(r'sku:(\d+)',r.xpath('//ul[@class="product-sku"]/li/span/@content')[0].extract())
                 item['sku']=m.group(0)
-                n = re.search(r'ean:(\d+)',r.xpath('//ul[@class="product-sku"]/li/span/@content')[0].extract())
-                item['ean'] = n
+                n = re.search(r'ean:(\d+)',r.xpath('//ul[@class="product-sku"]/li/span/@content')[1].extract())
+                if n:
+                    item['ean'] = n.group(0)
                 item['primary_image_url']=r.xpath('//a[@class ="js-primary-image-link"]/@href').extract()
                 item['time'] = datetime.datetime.now().time()
                 self.lnkk.append(r.xpath('//link/@href')[0].extract())
