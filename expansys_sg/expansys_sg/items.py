@@ -16,4 +16,8 @@ class ExpansysItem(scrapy.Item):
     currency = scrapy.Field()
     price=scrapy.Field()
     sku = scrapy.Field()
+    time = scrapy.Field()
+    category = scrapy.Field()
+    ean = scrapy.Field()
+    primary_image_url = scrapy.Field()
     pass

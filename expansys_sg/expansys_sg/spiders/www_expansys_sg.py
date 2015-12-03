@@ -1,6 +1,8 @@
 ﻿import scrapy
-
+import datetime
 from expansys_sg.items import ExpansysItem
+import re
+
 #init
 class DmozSpider(scrapy.Spider):
     name = "expansys"
@@ -32,13 +34,20 @@ class DmozSpider(scrapy.Spider):
     def parse_grid_contents(self,response):
         for r in response.xpath('//html'):
              
-            item = DmozItem()
+            item = ExpansysItem()
             #print "got in here"
             item['title'] = r.xpath('//h1[@itemprop="name"]/text()').extract()
             item['link'] =  r.xpath('//link/@href')[0].extract()
             item['price'] = r.xpath('//span[@itemprop="price"]/text()').extract()
             item['currency'] = r.xpath('//p[@id="price"]/meta/@content').extract()
-            item['sku']=r.xpath('//ul[@class="product-sku"]/li/span/@content').extract()
+            m = re.search(r'sku:(\d+)',r.xpath('//ul[@class="product-sku"]/li/span/@content')[0].extract())
+            item['sku']=m.group(0)
+            m = re.search(r'ean:(\d+)',r.xpath('//ul[@class="product-sku"]/li/span/@content')[0].extract())
+            item['ean'] = m.group(0)
+            item['primary_image_url']=r.xpath('//a[@class ="js-primary-image-link"]/@href').extract()
+            item['time'] = datetime.datetime.now().time()
+            
+            item['category'] =r.xpath('//ul[@id="breadcrumbs"]//span/text()').extract()
             #item['desc']=r.xpath('//div[@class="what_we_say"]/text()').extract()
             yield item
             

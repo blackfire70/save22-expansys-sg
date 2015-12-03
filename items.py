@@ -16,4 +16,6 @@ class DmozItem(scrapy.Item):
     currency = scrapy.Field()
     price=scrapy.Field()
     sku = scrapy.Field()
+    category = scrapy.Field()
+    ean = scrapy.Field()
     pass
