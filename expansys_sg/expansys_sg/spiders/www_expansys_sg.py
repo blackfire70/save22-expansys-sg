@@ -44,10 +44,13 @@ class ExpansysSpider(scrapy.Spider):
                 item['link'] =  r.xpath('//link/@href')[0].extract()
                 
                 if not r.xpath('//li[@class="instock"]')  and not  r.xpath('//li[@class="infostock"]'):
-                    item['price'] = r.xpath('//p[@id="price"]/strong/text()').extract()
+                    item['price'] = r.xpath('//p[@id="price"]/strong/text()').extract() + r.xpath('//p[@id="price"]/sup/text()')
+                    print r.xpath('//p[@id="price"]/strong/text()')[0].extract() + " no dot"
                     
                 else:
-                    item['price'] = r.xpath('//span[@itemprop="price"]/text()').extract()
+                    item['price'] = r.xpath(r'//p[@id ="price"]//span/text()').extract() + r.xpath('//p[@id ="price"]//span/sup/text()').extract()
+                    print r.xpath(r'//span[@itemprop="price"]/text()')[0].extract()
+                    
                 item['currency'] = r.xpath('//p[@id="price"]/meta/@content').extract()
                 m = re.search(r'sku:(\d+)',r.xpath('//ul[@class="product-sku"]/li/span/@content')[0].extract())
                 item['sku']=m.group(0)
