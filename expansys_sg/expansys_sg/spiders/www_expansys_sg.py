@@ -57,7 +57,7 @@ class ExpansysSpider(scrapy.Spider):
                 n = re.search(r'ean:(\d+)',r.xpath('//ul[@class="product-sku"]/li/span/@content')[1].extract())
                 if n:
                     item['ean'] = n.group(0)
-                item['brand'] = r.xpath('//ul[@class="product-sku"]/li/span/@content')[-1]
+                item['brand'] = r.xpath('//ul[@class="product-sku"]/li/a/text()').extract()
                 item['primary_image_url']=r.xpath('//a[@class ="js-primary-image-link"]/@href').extract()
                 item['time'] = datetime.datetime.now().time()
                 self.lnkk.append(r.xpath('//link/@href')[0].extract())
