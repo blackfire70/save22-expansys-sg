@@ -21,4 +21,5 @@ class ExpansysItem(scrapy.Item):
     ean = scrapy.Field()
     primary_image_url = scrapy.Field()
     availability = scrapy.Field()
+    brand = scrapy.Field()
     pass
