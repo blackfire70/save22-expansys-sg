@@ -1,39 +1,16 @@
-﻿import scrapy
+import scrapy
+from scrapy.spider import CrawlSpider,Rule
 import datetime
-from expansys_sg.items import ExpansysItem
-import re
+from scrapy.linkextractors import LinkExtractor
 
-#init
-class ExpansysSpider(scrapy.Spider):
-    name = "expansys"
-    allowed_domains = ["www.expansys.com.sg"]
-    start_urls = [
-       "http://www.expansys.com.sg/mobile-phones/phone-accessories/","http://www.expansys.com.sg/tablet-pcs+ipads/tablet-accessories/","http://www.expansys.com.sg/action/cameras/compact-camera-accessories/","http://www.expansys.com.sg/computing/computer-hardware+accessories/"]
-
-    def parse(self, response):
-        for ur in self.start_urls:
-            yield scrapy.Request(ur, callback=self.parse_dir_contents)
-
-        for href in response.css("ul.asia.me > li > a::attr('href')"):
-            url = response.urljoin(href.extract())
-            yield scrapy.Request(url, callback=self.parse_dir_contents)
-
- 
-
-    def parse_dir_contents(self, response):
-
-
-         
-        #gfcg
-        for sel in response.xpath('//li[@class="title"]//a/@href'):
-            url = response.urljoin(sel.extract())
-            
-            yield scrapy.Request(url, callback=self.parse_grid_contents)
-        for href in response.xpath('//a[@class="next"]/@href'):
-            url = response.urljoin(href.extract())
-            print url+ "next pager"
-            yield scrapy.Request(url,callback = self.parse_dir_contents)
-    lnkk=[]
+class Expansys(CrawlSpider):
+    name =  'expansys'
+    allowed_domains =['expansys.com.sg']
+    start_urls = ['http://www.expansys.com.sg/']
+    rule=[	Rule(LinkExtractor( allow = (r'.+',),deny = (r'.+/.filter',)),callback = 'parse_grid_contents',follow = True)
+          
+          ]
+   
     def parse_grid_contents(self,response):
         for r in response.xpath('//html'):
              
@@ -65,14 +42,3 @@ class ExpansysSpider(scrapy.Spider):
                 item['category'] =r.xpath('//ul[@id="breadcrumbs"]//span/text()').extract()
             #item['desc']=r.xpath('//div[@class="what_we_say"]/text()').extract()
             yield item
-            
-    def parse_next_page(self,response):
-            for sel in response.xpath('//li[@class="title"]//a/@href'):
-                url = response.urljoin(sel.extract())
-                print url
-                yield scrapy.Request(url, callback=self.parse_grid_contents)
-
-            
-
-    
-       
