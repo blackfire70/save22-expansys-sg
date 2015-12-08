@@ -22,4 +22,4 @@ class ExpansysItem(scrapy.Item):
     primary_image_url = scrapy.Field()
     availability = scrapy.Field()
     brand = scrapy.Field()
-    pass
+   

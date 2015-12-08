@@ -41,4 +41,4 @@ class Expansys(CrawlSpider):
             
                 item['category'] =r.xpath('//ul[@id="breadcrumbs"]//span/text()').extract()
             #item['desc']=r.xpath('//div[@class="what_we_say"]/text()').extract()
-            yield item
+            yield items
