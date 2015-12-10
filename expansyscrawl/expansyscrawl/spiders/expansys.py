@@ -9,7 +9,7 @@ class Expansys(CrawlSpider):
     now = datetime.datetime.now()
     allowed_domains =['expansys.com.sg']
     start_urls = ["http://www.expansys.com.sg/","http://www.expansys.com.sg/mobile-phones/phone-accessories/","http://www.expansys.com.sg/tablet-pcs+ipads/tablet-accessories/","http://www.expansys.com.sg/action/cameras/compact-camera-accessories/","http://www.expansys.com.sg/computing/computer-hardware+accessories/"]
-    rules=[	Rule(LinkExtractor( allow = (r'.+/D+',),deny =(r'.+?filter.+',r'.+forum.+',r'.+signin.+', r'.+aspx.+','.+blog.+'))),
+    rules=[	Rule(LinkExtractor( allow = (r'.+/',),deny =(r'.+?filter.+',r'.+/.+\d\d\d\d\d\d/',r'.+forum.+',r'.+signin.+', r'.+aspx.+','.+blog.+'))),
           	Rule(LinkExtractor( allow = (r'.+/?page.+',),deny =(r'.+?filter.+',r'.+forum.+',r'.+signin.+', r'.+aspx.+','.+blog.+'))),
             Rule(LinkExtractor( allow = (r'.+/.+\d\d\d\d\d\d/',),deny =(r'.+?filter.+',r'.+forum.+',r'.+signin.+', r'.+aspx.+','.+blog.+')), callback='parse_grid_contents',follow = True),  
            # Rule(LinkExtractor(allow=('item\.php', )))
