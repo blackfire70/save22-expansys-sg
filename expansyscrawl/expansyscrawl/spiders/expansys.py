@@ -1,4 +1,4 @@
-import scrapy
+﻿import scrapy
 from scrapy.spider import CrawlSpider,Rule
 import datetime
 import re
@@ -6,6 +6,7 @@ from scrapy.linkextractors import LinkExtractor
 from expansyscrawl.items import ExpansyscrawlItem
 class Expansys(CrawlSpider):
     name =  'expansys'
+    now = datetime.datetime.now()
     allowed_domains =['expansys.com.sg']
     start_urls = ["http://www.expansys.com.sg/","http://www.expansys.com.sg/mobile-phones/phone-accessories/","http://www.expansys.com.sg/tablet-pcs+ipads/tablet-accessories/","http://www.expansys.com.sg/action/cameras/compact-camera-accessories/","http://www.expansys.com.sg/computing/computer-hardware+accessories/"]
     rules=[	Rule(LinkExtractor( allow = (r'.+/D+',),deny =(r'.+?filter.+',r'.+forum.+',r'.+signin.+', r'.+aspx.+','.+blog.+'))),
@@ -41,7 +42,7 @@ class Expansys(CrawlSpider):
                     item['ean'] = n.group(0)
                 item['brand'] = r.xpath('//ul[@class="product-sku"]/li/a/text()').extract()
                 item['primary_image_url']=r.xpath('//a[@class ="js-primary-image-link"]/@href').extract()
-                item['time'] = datetime.datetime.now().time()
+                item['time'] =self.now.strftime("%Y-%m-%d %H:%M")
                 self.lnkk.append(r.xpath('//link/@href')[0].extract())
             
                 item['category'] =r.xpath('//ul[@id="breadcrumbs"]//span/text()').extract()
